@@ -1,0 +1,23 @@
+{
+  "name": "telegram-translator",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-powered Telegram translation relay bot",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "grammy": "^1.40.0",
+    "mongoose": "^8.23.0",
+    "openai": "^6.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.3.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
