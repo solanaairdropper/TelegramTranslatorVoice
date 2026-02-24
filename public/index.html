@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Translator</title>
+  <base href="/voice/">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Screen 1: Onboarding -->
+  <div class="screen" id="onboarding-screen">
+    <h1>Voice Translator</h1>
+    <p class="subtitle">Real-time voice-to-voice translation</p>
+
+    <div class="onboarding-card">
+      <h2>Get Started</h2>
+      <form id="onboarding-form">
+        <div class="form-group">
+          <label for="onboard-name">Your Name</label>
+          <input type="text" id="onboard-name" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+          <label for="onboard-lang">Your Language</label>
+          <select id="onboard-lang" required></select>
+        </div>
+        <div class="form-group" id="onboard-dialect-group" style="display:none">
+          <label for="onboard-dialect">Dialect</label>
+          <select id="onboard-dialect"></select>
+        </div>
+        <button type="submit" class="btn btn-primary" id="onboard-btn">Continue</button>
+        <p class="error-text" id="onboard-error" style="display:none"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- Screen 2: Voice Recording -->
+  <div class="screen" id="voice-screen">
+    <div class="voice-card" id="voice-card-main">
+      <h2>Voice Setup</h2>
+      <p class="voice-subtitle">Record yourself speaking so we can clone your voice for translations.</p>
+
+      <div class="script-section" id="script-section">
+        <div class="script-label">Read this aloud:</div>
+        <div class="script-text" id="script-text"></div>
+        <button class="btn-script-toggle" id="script-toggle-btn">Can't read your language? Show in English</button>
+        <p class="script-note" id="script-note" style="display:none">This is just a guide for <em>what</em> to say. <strong>Speak in your own language, not English.</strong> Read the English text, then say the same thing aloud in your language.</p>
+      </div>
+
+      <div class="recording-controls">
+        <div class="recording-timer" id="recording-timer">0:00 / 1:00</div>
+        <div class="progress-bar" id="voice-progress">
+          <div class="fill" id="voice-progress-fill" style="width:0%"></div>
+        </div>
+        <button class="record-btn" id="record-btn" title="Press to record">&#9679;</button>
+        <div class="recording-status" id="recording-status">Press the button to start recording</div>
+      </div>
+
+      <div class="voice-btn-row">
+        <button class="btn btn-outline" id="skip-voice-btn">Skip</button>
+        <button class="btn btn-primary" id="upload-voice-btn" disabled>Use Recording</button>
+      </div>
+      <p class="error-text" id="voice-error" style="display:none"></p>
+    </div>
+
+    <!-- Processing overlay (replaces card during clone) -->
+    <div class="processing-overlay" id="voice-processing">
+      <div class="spinner"></div>
+      <div class="processing-text">Cloning your voice... this may take 15-30 seconds</div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Home -->
+  <div class="screen" id="home-screen">
+    <h1>Voice Translator</h1>
+
+    <div class="home-container">
+      <div class="home-user-info">
+        <div class="user-name" id="home-user-name"></div>
+        <div class="user-lang" id="home-user-lang"></div>
+      </div>
+
+      <div class="home-actions">
+        <!-- Create Room -->
+        <div class="card">
+          <h3>Start a Room</h3>
+          <button class="btn btn-primary" id="create-room-btn">Create Room</button>
+          <p class="error-text" id="create-error" style="display:none"></p>
+        </div>
+
+        <!-- Join Room -->
+        <div class="card">
+          <h3>Join a Room</h3>
+          <div class="form-group">
+            <input type="text" id="join-code" placeholder="Enter room code" maxlength="6">
+          </div>
+          <button class="btn btn-primary" id="join-room-btn">Join</button>
+          <p class="error-text" id="join-error" style="display:none"></p>
+        </div>
+      </div>
+
+      <!-- Recent Rooms -->
+      <div class="recent-rooms" id="recent-rooms" style="display:none">
+        <h3>Recent Conversations</h3>
+        <div id="recent-rooms-list"></div>
+      </div>
+
+      <!-- Bottom links -->
+      <div class="home-bottom-actions">
+        <button class="btn-link" id="rerecord-btn">Re-record voice</button>
+        <button class="btn-link" id="change-profile-btn">Change profile</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

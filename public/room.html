@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Translator - Room</title>
+  <base href="/voice/">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://aka.ms/csspeech/jsbrowserpackageraw"></script>
+</head>
+<body>
+  <div class="room-container" id="room-app">
+    <!-- Header -->
+    <div class="room-header">
+      <div class="room-info">
+        <span class="room-code" id="room-code-display"></span>
+        <span class="partner-info" id="partner-info">Waiting for partner...</span>
+      </div>
+      <button class="btn btn-danger btn-sm" id="end-btn">End Call</button>
+    </div>
+
+    <!-- Waiting Screen -->
+    <div class="waiting-screen" id="waiting-screen">
+      <p>Share this code with your partner:</p>
+      <div class="room-code-display" id="waiting-code"></div>
+      <p>Waiting for someone to join<span class="dots"></span></p>
+    </div>
+
+    <!-- Chat Area -->
+    <div class="chat-area" id="chat-area" style="display:none"></div>
+
+    <!-- Typing Indicator -->
+    <div class="typing-indicator" id="typing-indicator" style="display:none"></div>
+
+    <!-- Input Bar -->
+    <div class="input-bar" id="input-bar" style="display:none">
+      <input type="text" id="text-input" placeholder="Type a message...">
+      <button class="send-btn" id="send-btn" title="Send text">&#9654;</button>
+      <button class="mic-btn" id="mic-btn" title="Hold to speak">&#127908;</button>
+    </div>
+  </div>
+
+  <script src="socket.io/socket.io.js"></script>
+  <script src="js/room.js"></script>
+</body>
+</html>

@@ -1,78 +1,48 @@
-import { Bot } from 'grammy';
+import express from 'express';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { config } from './config.js';
 import { connectDB } from './db/connection.js';
-import { BotContext, userMiddleware } from './bot/middleware.js';
-import { handleStart, handleEnd, handleMenu, handleSettings } from './bot/commands.js';
-import { handleCallback } from './bot/callbacks.js';
-import { routeMessage } from './bot/message-router.js';
-import { initI18n } from './ui/i18n.js';
+import { router } from './server/http-routes.js';
+import { setupSocketHandlers } from './server/ws-handler.js';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 async function main() {
-  // Connect to MongoDB
   await connectDB();
 
-  // Load cached translations into memory
-  await initI18n();
+  const app = express();
+  app.use(cors());
+  app.use(cookieParser());
+  app.use(express.json());
+  app.use('/api/voice', express.raw({ type: '*/*', limit: '20mb' }));
 
-  // Create bot
-  const bot = new Bot<BotContext>(config.telegram.token);
+  // Static files
+  app.use(express.static(path.join(__dirname, '..', 'public')));
 
-  // Get bot info
-  const me = await bot.api.getMe();
-  (config.telegram as any).botUsername = me.username;
-  console.log(`Bot: @${me.username}`);
+  // API routes
+  app.use(router);
 
-  // Set commands
-  await bot.api.setMyCommands([
-    { command: 'start', description: 'Get started' },
-    { command: 'end', description: 'End current conversation' },
-    { command: 'menu', description: 'Show main menu' },
-    { command: 'settings', description: 'Change language or dialect' },
-  ]);
-
-  // Middleware
-  bot.use(userMiddleware as any);
-
-  // Commands
-  bot.command('start', handleStart as any);
-  bot.command('end', handleEnd as any);
-  bot.command('menu', handleMenu as any);
-  bot.command('settings', handleSettings as any);
-
-  // Callback queries (inline buttons)
-  bot.on('callback_query:data', handleCallback as any);
-
-  // Text messages
-  bot.on('message:text', routeMessage as any);
-
-  // Block/unblock detection
-  bot.on('my_chat_member', async (ctx) => {
-    const newStatus = ctx.myChatMember.new_chat_member.status;
-    const userId = ctx.myChatMember.from.id;
-
-    if (newStatus === 'kicked') {
-      console.log(`User ${userId} blocked the bot`);
-      // TODO: notify partner if in active chat
-    } else if (newStatus === 'member') {
-      console.log(`User ${userId} unblocked the bot`);
-    }
+  // Room page route
+  app.get('/room/:code', (_req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'room.html'));
   });
 
-  // Error handler
-  bot.catch((err) => {
-    console.error('Bot error:', err);
+  const httpServer = createServer(app);
+  const io = new Server(httpServer, {
+    cors: { origin: '*' },
+    path: '/voice/socket.io',
+    maxHttpBufferSize: 10 * 1024 * 1024, // 10MB for voice samples
   });
 
-  // Start polling
-  console.log('Starting bot...');
-  await bot.start({
-    allowed_updates: [
-      'message',
-      'edited_message',
-      'callback_query',
-      'my_chat_member',
-    ],
-    onStart: () => console.log('Bot is running!'),
+  setupSocketHandlers(io);
+
+  httpServer.listen(config.server.port, () => {
+    console.log(`Server running on http://localhost:${config.server.port}`);
   });
 }
 

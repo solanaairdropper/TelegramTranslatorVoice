@@ -31,6 +31,8 @@ export const LANGUAGES: LanguageInfo[] = [
   { code: 'fil', name: 'Filipino', nativeName: 'Filipino', flag: '\u{1F1F5}\u{1F1ED}' },
   { code: 'ro', name: 'Romanian', nativeName: 'Rom\u00e2n\u0103', flag: '\u{1F1F7}\u{1F1F4}' },
   { code: 'cs', name: 'Czech', nativeName: '\u010Ce\u0161tina', flag: '\u{1F1E8}\u{1F1FF}' },
+  { code: 'sk', name: 'Slovak', nativeName: 'Sloven\u010Dina', flag: '\u{1F1F8}\u{1F1F0}' },
+  { code: 'gu', name: 'Gujarati', nativeName: '\u0A97\u0AC1\u0A9C\u0AB0\u0ABE\u0AA4\u0AC0', flag: '\u{1F1EE}\u{1F1F3}' },
 ];
 
 export function getLanguage(code: string): LanguageInfo | undefined {

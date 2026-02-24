@@ -63,6 +63,7 @@ export async function streamTranslation(
   try {
     const result = JSON.parse(fullText) as TranslationResult;
     return {
+      corrected: result.corrected || params.originalText,
       literal: result.literal || params.originalText,
       translated: result.translated || result.literal || params.originalText,
       confidence: result.confidence ?? 0.8,

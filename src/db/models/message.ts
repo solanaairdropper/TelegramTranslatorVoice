@@ -4,11 +4,9 @@ export type MessageView = 'translation' | 'original' | 'literal' | 'clarify' | '
 
 export interface IMessage extends Document {
   _id: Types.ObjectId;
-  sessionId: Types.ObjectId;
-  senderId: number;
-  receiverId: number;
-  senderMessageId: number;
-  receiverMessageId?: number;
+  roomId: Types.ObjectId;
+  senderId: string;
+  receiverId: string;
   originalText: string;
   literalTranslation: string;
   meaningTranslation: string;
@@ -23,11 +21,9 @@ export interface IMessage extends Document {
 }
 
 const messageSchema = new Schema<IMessage>({
-  sessionId: { type: Schema.Types.ObjectId, ref: 'Session', required: true, index: true },
-  senderId: { type: Number, required: true },
-  receiverId: { type: Number, required: true },
-  senderMessageId: { type: Number, required: true },
-  receiverMessageId: Number,
+  roomId: { type: Schema.Types.ObjectId, ref: 'Room', required: true, index: true },
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
   originalText: { type: String, required: true },
   literalTranslation: { type: String, default: '' },
   meaningTranslation: { type: String, default: '' },
@@ -41,6 +37,6 @@ const messageSchema = new Schema<IMessage>({
   createdAt: { type: Date, default: Date.now },
 });
 
-messageSchema.index({ sessionId: 1, createdAt: -1 });
+messageSchema.index({ roomId: 1, createdAt: -1 });
 
 export const Message = mongoose.model<IMessage>('Message', messageSchema);

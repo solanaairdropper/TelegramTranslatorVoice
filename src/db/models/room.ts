@@ -1,18 +1,21 @@
 import mongoose, { Schema, Document, Types } from 'mongoose';
 
-export type SessionStatus = 'waiting' | 'active' | 'ended';
+export type RoomStatus = 'waiting' | 'voice_setup' | 'active' | 'ended';
 
-export interface ISession extends Document {
+export interface IRoom extends Document {
   _id: Types.ObjectId;
-  creatorId: number;
-  joinerId?: number;
+  roomCode: string;
+  status: RoomStatus;
+  creatorUserId: string;
+  joinerUserId?: string;
   creatorName: string;
   joinerName?: string;
   creatorLanguage: string;
   joinerLanguage?: string;
-  inviteToken: string;
-  joinCode: string;
-  status: SessionStatus;
+  creatorDialect?: string;
+  joinerDialect?: string;
+  creatorVoiceId?: string;
+  joinerVoiceId?: string;
   sentimentTimeline: Array<{
     timestamp: Date;
     sentiment: string;
@@ -24,16 +27,19 @@ export interface ISession extends Document {
   endedAt?: Date;
 }
 
-const sessionSchema = new Schema<ISession>({
-  creatorId: { type: Number, required: true, index: true },
-  joinerId: { type: Number, index: true },
+const roomSchema = new Schema<IRoom>({
+  roomCode: { type: String, required: true, unique: true, index: true },
+  status: { type: String, default: 'waiting', index: true },
+  creatorUserId: { type: String, required: true },
+  joinerUserId: String,
   creatorName: { type: String, required: true },
   joinerName: String,
   creatorLanguage: { type: String, required: true },
   joinerLanguage: String,
-  inviteToken: { type: String, required: true, unique: true, index: true },
-  joinCode: { type: String, required: true },
-  status: { type: String, default: 'waiting', index: true },
+  creatorDialect: String,
+  joinerDialect: String,
+  creatorVoiceId: String,
+  joinerVoiceId: String,
   sentimentTimeline: [{
     timestamp: { type: Date, default: Date.now },
     sentiment: String,
@@ -45,4 +51,4 @@ const sessionSchema = new Schema<ISession>({
   endedAt: Date,
 });
 
-export const Session = mongoose.model<ISession>('Session', sessionSchema);
+export const Room = mongoose.model<IRoom>('Room', roomSchema);

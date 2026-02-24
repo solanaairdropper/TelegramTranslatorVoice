@@ -12,6 +12,7 @@ import {
 } from './prompts.js';
 
 export interface TranslationResult {
+  corrected?: string;
   literal: string;
   translated: string;
   confidence: number;
@@ -36,6 +37,7 @@ export async function translateMessage(params: {
     { temperature: 0.2 }
   );
   return {
+    corrected: result.corrected || params.originalText,
     literal: result.literal || params.originalText,
     translated: result.translated || result.literal || params.originalText,
     confidence: result.confidence ?? 0.8,

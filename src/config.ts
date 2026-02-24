@@ -6,16 +6,27 @@ function required(name: string): string {
   return val;
 }
 
+function optional(name: string, fallback: string): string {
+  return process.env[name] || fallback;
+}
+
 export const config = {
-  telegram: {
-    token: required('TELEGRAM_BOT_TOKEN'),
-    botUsername: '', // populated at startup
+  server: {
+    port: parseInt(optional('PORT', '3000'), 10),
   },
   azure: {
     endpoint: required('AZURE_OPENAI_ENDPOINT'),
     deployment: required('AZURE_OPENAI_DEPLOYMENT'),
     apiVersion: required('AZURE_OPENAI_API_VERSION'),
     apiKey: required('AZURE_OPENAI_API_KEY'),
+  },
+  speech: {
+    key: required('AZURE_SPEECH_KEY'),
+    region: required('AZURE_SPEECH_REGION'),
+  },
+  elevenlabs: {
+    apiKey: required('ELEVENLABS_API_KEY'),
+    defaultVoiceId: optional('ELEVENLABS_DEFAULT_VOICE', 'pNInz6obpgDQGcFmaJgB'),
   },
   mongodb: {
     uri: required('MONGODB_URI'),
@@ -24,6 +35,5 @@ export const config = {
     contextWindowSize: 16,
     expandedContextSize: 24,
     confidenceThreshold: 0.7,
-    revertTimeoutSeconds: 30,
   },
 } as const;
